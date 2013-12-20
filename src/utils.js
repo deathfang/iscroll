@@ -8,7 +8,7 @@ var rAF = window.requestAnimationFrame	||
 var utils = (function () {
 	var me = {};
 
-	var _elementStyle = document.createElement('div').style;
+  var _elementStyle = document.createElement('div').style;
 	var _vendor = (function () {
 		var vendors = ['t', 'webkitT', 'MozT', 'msT', 'OT'],
 			transform,
@@ -20,7 +20,6 @@ var utils = (function () {
 			if ( transform in _elementStyle ) return vendors[i].substr(0, vendors[i].length-1);
 		}
 
-		return false;
 	})();
 
 	function _prefixStyle (style) {
@@ -29,7 +28,7 @@ var utils = (function () {
 		return _vendor + style.charAt(0).toUpperCase() + style.substr(1);
 	}
 
-	me.getTime = Date.now || function getTime () { return new Date().getTime(); };
+	me.getTime = Date.now || function () { return +new Date };
 
 	me.extend = function (target, obj) {
 		for ( var i in obj ) {
@@ -82,7 +81,7 @@ var utils = (function () {
 	});
 
 	// This should find all Android browsers lower than build 535.19 (both stock browser and webview)
-	me.isBadAndroid = /Android/.test(window.navigator.appVersion) && !(/Chrome\/\d/.test(window.navigator.appVersion));
+	me.isBadAndroid = window.navigator.appVersion.match('Android').length && !/Chrome\/\d/.test(window.navigator.appVersion);
 
 	me.extend(me.style = {}, {
 		transform: _transform,
