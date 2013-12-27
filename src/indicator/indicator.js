@@ -258,8 +258,10 @@ Indicator.prototype = {
 				}
 			}
 		} else {
-			utils.removeClass(this.wrapper, 'iScrollBothScrollbars');
-			utils.addClass(this.wrapper, 'iScrollLoneScrollbar');
+//			utils.removeClass(this.wrapper, 'iScrollBothScrollbars');
+      this.wrapper.classList.add('iScrollBothScrollbars');
+//			utils.addClass(this.wrapper, 'iScrollLoneScrollbar');
+      this.wrapper.classList.remove('iScrollLoneScrollbar');
 
 			if ( this.options.defaultScrollbars && this.options.customStyle ) {
 				if ( this.options.listenX ) {

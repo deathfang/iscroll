@@ -83,43 +83,21 @@ var utils = (function () {
 	// This should find all Android browsers lower than build 535.19 (both stock browser and webview)
 	me.isBadAndroid = window.navigator.appVersion.match('Android').length && !/Chrome\/\d/.test(window.navigator.appVersion);
 
-	me.extend(me.style = {}, {
+//	me.extend(me.style = {}, {
+  me.style = {
 		transform: _transform,
 		transitionTimingFunction: _prefixStyle('transitionTimingFunction'),
 		transitionDuration: _prefixStyle('transitionDuration'),
 		transitionDelay: _prefixStyle('transitionDelay'),
 		transformOrigin: _prefixStyle('transformOrigin')
-	});
-
-	me.hasClass = function (e, c) {
-		var re = new RegExp("(^|\\s)" + c + "(\\s|$)");
-		return re.test(e.className);
-	};
-
-	me.addClass = function (e, c) {
-		if ( me.hasClass(e, c) ) {
-			return;
-		}
-
-		var newclass = e.className.split(' ');
-		newclass.push(c);
-		e.className = newclass.join(' ');
-	};
-
-	me.removeClass = function (e, c) {
-		if ( !me.hasClass(e, c) ) {
-			return;
-		}
-
-		var re = new RegExp("(^|\\s)" + c + "(\\s|$)", 'g');
-		e.className = e.className.replace(re, ' ');
-	};
-
+//	});
+  }
 	me.offset = function (el) {
 		var left = -el.offsetLeft,
 			top = -el.offsetTop;
 
 		// jshint -W084
+    // offsetParent 查询
 		while (el = el.offsetParent) {
 			left -= el.offsetLeft;
 			top -= el.offsetTop;
@@ -142,7 +120,8 @@ var utils = (function () {
 		return false;
 	};
 
-	me.extend(me.eventType = {}, {
+//	me.extend(me.eventType = {}, {
+  me.eventType = {
 		touchstart: 1,
 		touchmove: 1,
 		touchend: 1,
@@ -154,9 +133,11 @@ var utils = (function () {
 		MSPointerDown: 3,
 		MSPointerMove: 3,
 		MSPointerUp: 3
-	});
+  }
+//	});
 
-	me.extend(me.ease = {}, {
+//	me.extend(me.ease = {}, {
+  me.ease = {
 		quadratic: {
 			style: 'cubic-bezier(0.25, 0.46, 0.45, 0.94)',
 			fn: function (k) {
@@ -202,7 +183,7 @@ var utils = (function () {
 				return ( e * Math.pow( 2, - 10 * k ) * Math.sin( ( k - f / 4 ) * ( 2 * Math.PI ) / f ) + 1 );
 			}
 		}
-	});
+	};
 
 	me.tap = function (e, eventName) {
 		var ev = document.createEvent('Event');

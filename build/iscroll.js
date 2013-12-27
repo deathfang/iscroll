@@ -86,13 +86,15 @@ var utils = (function () {
 	// This should find all Android browsers lower than build 535.19 (both stock browser and webview)
 	me.isBadAndroid = /Android/.test(window.navigator.appVersion) && !(/Chrome\/\d/.test(window.navigator.appVersion));
 
-	me.extend(me.style = {}, {
-		transform: _transform,
-		transitionTimingFunction: _prefixStyle('transitionTimingFunction'),
-		transitionDuration: _prefixStyle('transitionDuration'),
-		transitionDelay: _prefixStyle('transitionDelay'),
-		transformOrigin: _prefixStyle('transformOrigin')
-	});
+//	me.extend(me.style = {}, {
+  me.style = {
+    transform: _transform,
+    transitionTimingFunction: _prefixStyle('transitionTimingFunction'),
+    transitionDuration: _prefixStyle('transitionDuration'),
+    transitionDelay: _prefixStyle('transitionDelay'),
+    transformOrigin: _prefixStyle('transformOrigin')
+//	});
+  }
 
 	me.hasClass = function (e, c) {
 		var re = new RegExp("(^|\\s)" + c + "(\\s|$)");
