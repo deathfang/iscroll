@@ -185,13 +185,13 @@ var utils = (function () {
 		}
 	};
 
-	me.tap = function (e, eventName) {
-		var ev = document.createEvent('Event');
-		ev.initEvent(eventName, true, true);
-		ev.pageX = e.pageX;
-		ev.pageY = e.pageY;
-		e.target.dispatchEvent(ev);
-	};
+//	me.tap = function (e, eventName) {
+//		var ev = document.createEvent('Event');
+//		ev.initEvent(eventName, true, true);
+//		ev.pageX = e.pageX;
+//		ev.pageY = e.pageY;
+//		e.target.dispatchEvent(ev);
+//	};
 
 	me.click = function (e) {
 		var target = e.target,

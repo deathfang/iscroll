@@ -7,17 +7,21 @@
 <title>iScroll demo: simple</title>
 
 <script type="text/javascript" src="../../build/iscroll.js"></script>
+<script type="text/javascript" src="../../zepto/dist/zepto.js"></script>
 
 <script type="text/javascript">
 
 var myScroll;
 
 function loaded () {
-	myScroll = new IScroll('#wrapper', { mouseWheel: true, tap: true });
+	myScroll = new IScroll('#wrapper', { mouseWheel: true});
 
-	document.getElementById('me').addEventListener('tap', function () {
-		this.style.background = !this.style.background ? '#a00' : '';
-	}, false);
+//	document.getElementById('me').addEventListener('tap', function (e) {
+//		this.style.background = !this.style.background ? '#a00' : '';
+//	}, false);
+    $('#me').tap(function (e) {
+        this.style.background = !this.style.background ? 'yellow' : '';
+    }, false);
 }
 
 document.addEventListener('touchmove', function (e) { e.preventDefault(); }, false);
@@ -188,7 +192,14 @@ body {
 	</div>
 </div>
 
-<div id="footer"></div>
+<div id="footer">
 
+</div>
+<script>
+//    	$('#me').tap(function (e) {
+////    	document.getElementById('me').addEventListener('touchstart', function (e) {
+//    		this.style.background = !this.style.background ? 'green' : '';
+//    	}, false);
+</script>
 </body>
 </html>

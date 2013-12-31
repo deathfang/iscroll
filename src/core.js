@@ -51,9 +51,9 @@ function IScroll (el, options) {
 
 	this.options.resizePolling = this.options.resizePolling === undefined ? 60 : this.options.resizePolling;
 
-	if ( this.options.tap === true ) {
-		this.options.tap = 'tap';
-	}
+//	if ( this.options.tap === true ) {
+//		this.options.tap = 'tap';
+//	}
 
 // INSERT POINT: NORMALIZATION
 
@@ -282,9 +282,9 @@ IScroll.prototype = {
 
 		// we scrolled less than 10 pixels
 		if ( !this.moved ) {
-			if ( this.options.tap ) {
-				utils.tap(e, this.options.tap);
-			}
+//			if ( this.options.tap ) {
+//				utils.tap(e, this.options.tap);
+//			}
 
 			if ( this.options.click ) {
 				utils.click(e);
