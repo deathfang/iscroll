@@ -44,14 +44,17 @@ var utils = (function () {
 		el.removeEventListener(type, fn, !!capture);
 	};
 
-	me.momentum = function (current, start, time, lowerMargin, wrapperSize) {
-		var distance = current - start,
+  me.momentum = function (current, start, time, lowerMargin, wrapperSize, deceleration) {
+
+      var distance = current - start,
 			speed = Math.abs(distance) / time,
 			destination,
-			duration,
-			deceleration = 0.0006;
+        duration;
 
-		destination = current + ( speed * speed ) / ( 2 * deceleration ) * ( distance < 0 ? -1 : 1 );
+    deceleration = deceleration === undefined ? 0.0006 : deceleration;
+
+
+    destination = current + ( speed * speed ) / ( 2 * deceleration ) * ( distance < 0 ? -1 : 1 );
 		duration = speed / deceleration;
 
 		if ( destination < lowerMargin ) {
@@ -73,11 +76,11 @@ var utils = (function () {
 	var _transform = _prefixStyle('transform');
 
 	me.extend(me, {
-		hasTransform: _transform !== false,
+//		hasTransform: _transform !== false,
 		hasPerspective: _prefixStyle('perspective') in _elementStyle,
 		hasTouch: 'ontouchstart' in window,
-		hasPointer: navigator.msPointerEnabled,
-		hasTransition: _prefixStyle('transition') in _elementStyle
+		hasPointer: navigator.msPointerEnabled
+//	,hasTransition: _prefixStyle('transition') in _elementStyle
 	});
 
 	// This should find all Android browsers lower than build 535.19 (both stock browser and webview)
@@ -197,8 +200,8 @@ var utils = (function () {
 		var target = e.target,
 			ev;
 
-		if (target.tagName != 'SELECT' && target.tagName != 'INPUT' && target.tagName != 'TEXTAREA') {
-			ev = document.createEvent('MouseEvents');
+    if ( !(/(SELECT|INPUT|TEXTAREA)/i).test(target.tagName) ) {
+      ev = document.createEvent('MouseEvents');
 			ev.initMouseEvent('click', true, true, e.view, 1,
 				target.screenX, target.screenY, target.clientX, target.clientY,
 				e.ctrlKey, e.altKey, e.shiftKey, e.metaKey,

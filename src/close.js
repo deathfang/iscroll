@@ -1,5 +1,5 @@
 
-IScroll.utils = utils;
+//IScroll.utils = utils;
 
 if ( typeof module != 'undefined' && module.exports ) {
 	module.exports = IScroll;

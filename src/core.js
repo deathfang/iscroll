@@ -16,7 +16,7 @@ function IScroll (el, options) {
 
 		bounce: true,
 		bounceTime: 600,
-		bounceEasing: '',
+		bounceEasing: utils.ease.circular,
 
 		preventDefault: true,
 		preventDefaultException: { tagName: /^(INPUT|TEXTAREA|BUTTON|SELECT)$/ },
@@ -24,17 +24,18 @@ function IScroll (el, options) {
 		HWCompositing: true,
 		useTransition: true,
 		useTransform: true
+   ,resizePolling:60
 	};
 
-	for ( var i in options ) {
-		this.options[i] = options[i];
-	}
-
+//	for ( var i in options ) {
+//		this.options[i] = options[i];
+//	}
+  utils.extend(this.options,options);
 	// Normalize options
 	this.translateZ = this.options.HWCompositing && utils.hasPerspective ? ' translateZ(0)' : '';
 
-	this.options.useTransition = utils.hasTransition && this.options.useTransition;
-	this.options.useTransform = utils.hasTransform && this.options.useTransform;
+	this.options.useTransition = this.options.useTransition;
+	this.options.useTransform = utils.style.transform && this.options.useTransform;
 
 	this.options.eventPassthrough = this.options.eventPassthrough === true ? 'vertical' : this.options.eventPassthrough;
 	this.options.preventDefault = !this.options.eventPassthrough && this.options.preventDefault;
@@ -44,12 +45,11 @@ function IScroll (el, options) {
 	this.options.scrollX = this.options.eventPassthrough == 'horizontal' ? false : this.options.scrollX;
 
 	// With eventPassthrough we also need lockDirection mechanism
-	this.options.freeScroll = this.options.freeScroll && !this.options.eventPassthrough;
+	this.options.freeScroll = this.options.freeScroll;
 	this.options.directionLockThreshold = this.options.eventPassthrough ? 0 : this.options.directionLockThreshold;
 
-	this.options.bounceEasing = typeof this.options.bounceEasing == 'string' ? utils.ease[this.options.bounceEasing] || utils.ease.circular : this.options.bounceEasing;
+	typeof this.options.bounceEasing == 'string' && (this.options.bounceEasing = utils.ease[this.options.bounceEasing] || utils.ease.circular);
 
-	this.options.resizePolling = this.options.resizePolling === undefined ? 60 : this.options.resizePolling;
 
 //	if ( this.options.tap === true ) {
 //		this.options.tap = 'tap';
@@ -301,9 +301,10 @@ IScroll.prototype = {
 
 		// start momentum animation if needed
 		if ( this.options.momentum && duration < 300 ) {
-			momentumX = this.hasHorizontalScroll ? utils.momentum(this.x, this.startX, duration, this.maxScrollX, this.options.bounce ? this.wrapperWidth : 0) : { destination: newX, duration: 0 };
-			momentumY = this.hasVerticalScroll ? utils.momentum(this.y, this.startY, duration, this.maxScrollY, this.options.bounce ? this.wrapperHeight : 0) : { destination: newY, duration: 0 };
-			newX = momentumX.destination;
+      momentumX = this.hasHorizontalScroll ? utils.momentum(this.x, this.startX, duration, this.maxScrollX, this.options.bounce ? this.wrapperWidth : 0, this.options.deceleration) : { destination: newX, duration: 0 };
+      momentumY = this.hasVerticalScroll ? utils.momentum(this.y, this.startY, duration, this.maxScrollY, this.options.bounce ? this.wrapperHeight : 0, this.options.deceleration) : { destination: newY, duration: 0 };
+
+      newX = momentumX.destination;
 			newY = momentumY.destination;
 			time = Math.max(momentumX.duration, momentumY.duration);
 			this.isInTransition = 1;
@@ -380,12 +381,12 @@ IScroll.prototype = {
 		this.scrollerWidth	= this.scroller.offsetWidth;
 		this.scrollerHeight	= this.scroller.offsetHeight;
 
-/* REPLACE END: refresh */
-
 		this.maxScrollX		= this.wrapperWidth - this.scrollerWidth;
 		this.maxScrollY		= this.wrapperHeight - this.scrollerHeight;
 
-		this.hasHorizontalScroll	= this.options.scrollX && this.maxScrollX < 0;
+    /* REPLACE END: refresh */
+
+    this.hasHorizontalScroll	= this.options.scrollX && this.maxScrollX < 0;
 		this.hasVerticalScroll		= this.options.scrollY && this.maxScrollY < 0;
 
 		if ( !this.hasHorizontalScroll ) {
@@ -419,8 +420,19 @@ IScroll.prototype = {
 
 		this._events[type].push(fn);
 	},
+  off: function (type, fn) {
+    if ( !this._events[type] ) {
+      return;
+    }
 
-	_execEvent: function (type) {
+    var index = this._events[type].indexOf(fn);
+
+    if ( index > -1 ) {
+      this._events[type].splice(index, 1);
+    }
+  },
+
+  _execEvent: function (type) {
 		if ( !this._events[type] ) {
 			return;
 		}
@@ -433,8 +445,8 @@ IScroll.prototype = {
 		}
 
 		for ( ; i < l; i++ ) {
-			this._events[type][i].call(this);
-		}
+      this._events[type][i].apply(this, [].slice.call(arguments, 1));
+    }
 	},
 
 	scrollBy: function (x, y, time, easing) {
