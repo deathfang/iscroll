@@ -44,14 +44,15 @@ var utils = (function () {
 		el.removeEventListener(type, fn, !!capture);
 	};
 
-  me.momentum = function (current, start, time, lowerMargin, wrapperSize, deceleration) {
-
-      var distance = current - start,
+ration = deceleration === undefined ? 0.0006 : deceleration;
+	me.momentum = function (current, start, time, lowerMargin, wrapperSize, deceleration) {
+		var distance = current - start,
 			speed = Math.abs(distance) / time,
 			destination,
-        duration;
+			duration;
 
-    deceleration = deceleration === undefined ? 0.0006 : deceleration;
+		deceleration = deceleration === undefined ? 0.0006 : deceleration;
+
 
 
     destination = current + ( speed * speed ) / ( 2 * deceleration ) * ( distance < 0 ? -1 : 1 );
@@ -85,6 +86,7 @@ var utils = (function () {
 
 	// This should find all Android browsers lower than build 535.19 (both stock browser and webview)
 	me.isBadAndroid = window.navigator.appVersion.match('Android').length && !/Chrome\/\d/.test(window.navigator.appVersion);
+
 
 //	me.extend(me.style = {}, {
   me.style = {

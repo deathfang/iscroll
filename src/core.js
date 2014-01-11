@@ -301,10 +301,12 @@ IScroll.prototype = {
 
 		// start momentum animation if needed
 		if ( this.options.momentum && duration < 300 ) {
+
       momentumX = this.hasHorizontalScroll ? utils.momentum(this.x, this.startX, duration, this.maxScrollX, this.options.bounce ? this.wrapperWidth : 0, this.options.deceleration) : { destination: newX, duration: 0 };
       momentumY = this.hasVerticalScroll ? utils.momentum(this.y, this.startY, duration, this.maxScrollY, this.options.bounce ? this.wrapperHeight : 0, this.options.deceleration) : { destination: newY, duration: 0 };
 
       newX = momentumX.destination;
+
 			newY = momentumY.destination;
 			time = Math.max(momentumX.duration, momentumY.duration);
 			this.isInTransition = 1;
@@ -384,9 +386,10 @@ IScroll.prototype = {
 		this.maxScrollX		= this.wrapperWidth - this.scrollerWidth;
 		this.maxScrollY		= this.wrapperHeight - this.scrollerHeight;
 
-    /* REPLACE END: refresh */
 
-    this.hasHorizontalScroll	= this.options.scrollX && this.maxScrollX < 0;
+/* REPLACE END: refresh */
+
+		this.hasHorizontalScroll	= this.options.scrollX && this.maxScrollX < 0;
 		this.hasVerticalScroll		= this.options.scrollY && this.maxScrollY < 0;
 
 		if ( !this.hasHorizontalScroll ) {
@@ -427,12 +430,20 @@ IScroll.prototype = {
 
     var index = this._events[type].indexOf(fn);
 
-    if ( index > -1 ) {
-      this._events[type].splice(index, 1);
-    }
-  },
 
-  _execEvent: function (type) {
+	off: function (type, fn) {
+		if ( !this._events[type] ) {
+			return;
+		}
+
+		var index = this._events[type].indexOf(fn);
+
+		if ( index > -1 ) {
+			this._events[type].splice(index, 1);
+		}
+	},
+
+	_execEvent: function (type) {
 		if ( !this._events[type] ) {
 			return;
 		}
@@ -445,8 +456,9 @@ IScroll.prototype = {
 		}
 
 		for ( ; i < l; i++ ) {
-      this._events[type][i].apply(this, [].slice.call(arguments, 1));
-    }
+
+			this._events[type][i].apply(this, [].slice.call(arguments, 1));
+		}
 	},
 
 	scrollBy: function (x, y, time, easing) {
