@@ -44,37 +44,35 @@ var utils = (function () {
 		el.removeEventListener(type, fn, !!capture);
 	};
 
-ration = deceleration === undefined ? 0.0006 : deceleration;
-	me.momentum = function (current, start, time, lowerMargin, wrapperSize, deceleration) {
-		var distance = current - start,
-			speed = Math.abs(distance) / time,
-			destination,
-			duration;
+  me.momentum = function (current, start, time, lowerMargin, wrapperSize, deceleration) {
+    var distance = current - start,
+      speed = Math.abs(distance) / time,
+      destination,
+      duration;
 
-		deceleration = deceleration === undefined ? 0.0006 : deceleration;
-
-
+    deceleration = deceleration === undefined ? 0.0006 : deceleration;
 
     destination = current + ( speed * speed ) / ( 2 * deceleration ) * ( distance < 0 ? -1 : 1 );
-		duration = speed / deceleration;
+    duration = speed / deceleration;
 
-		if ( destination < lowerMargin ) {
-			destination = wrapperSize ? lowerMargin - ( wrapperSize / 2.5 * ( speed / 8 ) ) : lowerMargin;
-			distance = Math.abs(destination - current);
-			duration = distance / speed;
-		} else if ( destination > 0 ) {
-			destination = wrapperSize ? wrapperSize / 2.5 * ( speed / 8 ) : 0;
-			distance = Math.abs(current) + destination;
-			duration = distance / speed;
-		}
+    if ( destination < lowerMargin ) {
+      destination = wrapperSize ? lowerMargin - ( wrapperSize / 2.5 * ( speed / 8 ) ) : lowerMargin;
+      distance = Math.abs(destination - current);
+      duration = distance / speed;
+    } else if ( destination > 0 ) {
+      destination = wrapperSize ? wrapperSize / 2.5 * ( speed / 8 ) : 0;
+      distance = Math.abs(current) + destination;
+      duration = distance / speed;
+    }
 
-		return {
-			destination: Math.round(destination),
-			duration: duration
-		};
-	};
+    return {
+      destination: Math.round(destination),
+      duration: duration
+    };
+  };
 
-	var _transform = _prefixStyle('transform');
+
+//	var _transform = _prefixStyle('transform');
 
 	me.extend(me, {
 //		hasTransform: _transform !== false,
@@ -85,12 +83,13 @@ ration = deceleration === undefined ? 0.0006 : deceleration;
 	});
 
 	// This should find all Android browsers lower than build 535.19 (both stock browser and webview)
-	me.isBadAndroid = window.navigator.appVersion.match('Android').length && !/Chrome\/\d/.test(window.navigator.appVersion);
+	me.isBadAndroid = window.navigator.appVersion.match('Android') && !/Chrome\/\d/.test(window.navigator.appVersion);
 
 
 //	me.extend(me.style = {}, {
   me.style = {
-		transform: _transform,
+		transition: _prefixStyle('transition'),
+		transform: _prefixStyle('transform'),
 		transitionTimingFunction: _prefixStyle('transitionTimingFunction'),
 		transitionDuration: _prefixStyle('transitionDuration'),
 		transitionDelay: _prefixStyle('transitionDelay'),

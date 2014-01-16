@@ -247,8 +247,8 @@ Indicator.prototype = {
 		}
 
 		if ( this.scroller.hasHorizontalScroll && this.scroller.hasVerticalScroll ) {
-			utils.addClass(this.wrapper, 'iScrollBothScrollbars');
-			utils.removeClass(this.wrapper, 'iScrollLoneScrollbar');
+      this.wrapper.classList.add('iScrollBothScrollbars');
+      this.wrapper.classList.remove('iScrollLoneScrollbar');
 
 			if ( this.options.defaultScrollbars && this.options.customStyle ) {
 				if ( this.options.listenX ) {
@@ -258,10 +258,8 @@ Indicator.prototype = {
 				}
 			}
 		} else {
-//			utils.removeClass(this.wrapper, 'iScrollBothScrollbars');
-      this.wrapper.classList.add('iScrollBothScrollbars');
-//			utils.addClass(this.wrapper, 'iScrollLoneScrollbar');
       this.wrapper.classList.remove('iScrollLoneScrollbar');
+      this.wrapper.classList.add('iScrollBothScrollbars');
 
 			if ( this.options.defaultScrollbars && this.options.customStyle ) {
 				if ( this.options.listenX ) {

@@ -1,6 +1,6 @@
 
-//IScroll.utils = utils;
-
+IScroll.utils = utils;
+//minimap demo require IScroll.utils
 if ( typeof module != 'undefined' && module.exports ) {
 	module.exports = IScroll;
 } else {

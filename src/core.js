@@ -34,11 +34,12 @@ function IScroll (el, options) {
 	// Normalize options
 	this.translateZ = this.options.HWCompositing && utils.hasPerspective ? ' translateZ(0)' : '';
 
-	this.options.useTransition = this.options.useTransition;
+//	this.options.useTransition = this.options.useTransition;
 	this.options.useTransform = utils.style.transform && this.options.useTransform;
 
 	this.options.eventPassthrough = this.options.eventPassthrough === true ? 'vertical' : this.options.eventPassthrough;
-	this.options.preventDefault = !this.options.eventPassthrough && this.options.preventDefault;
+  //	this.options.preventDefault = !this.options.eventPassthrough && this.options.preventDefault;
+  this.options.preventDefault = !this.options.eventPassthrough;
 
 	// If you want eventPassthrough I have to lock one of the axes
 	this.options.scrollY = this.options.eventPassthrough == 'vertical' ? false : this.options.scrollY;
@@ -423,13 +424,6 @@ IScroll.prototype = {
 
 		this._events[type].push(fn);
 	},
-  off: function (type, fn) {
-    if ( !this._events[type] ) {
-      return;
-    }
-
-    var index = this._events[type].indexOf(fn);
-
 
 	off: function (type, fn) {
 		if ( !this._events[type] ) {
@@ -589,10 +583,10 @@ IScroll.prototype = {
 			eventType(target, 'touchend', this);
 		}
 
-		eventType(this.scroller, 'transitionend', this);
-		eventType(this.scroller, 'webkitTransitionEnd', this);
-		eventType(this.scroller, 'oTransitionEnd', this);
-		eventType(this.scroller, 'MSTransitionEnd', this);
+    eventType(this.scroller,  utils.style.transition + 'End', this);
+//		eventType(this.scroller, 'webkitTransitionEnd', this);
+//		eventType(this.scroller, 'oTransitionEnd', this);
+//		eventType(this.scroller, 'MSTransitionEnd', this);
 	},
 
 	getComputedPosition: function () {

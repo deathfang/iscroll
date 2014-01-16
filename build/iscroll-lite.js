@@ -10,7 +10,7 @@ var rAF = window.requestAnimationFrame	||
 var utils = (function () {
 	var me = {};
 
-	var _elementStyle = document.createElement('div').style;
+  var _elementStyle = document.createElement('div').style;
 	var _vendor = (function () {
 		var vendors = ['t', 'webkitT', 'MozT', 'msT', 'OT'],
 			transform,
@@ -22,7 +22,6 @@ var utils = (function () {
 			if ( transform in _elementStyle ) return vendors[i].substr(0, vendors[i].length-1);
 		}
 
-		return false;
 	})();
 
 	function _prefixStyle (style) {
@@ -31,7 +30,7 @@ var utils = (function () {
 		return _vendor + style.charAt(0).toUpperCase() + style.substr(1);
 	}
 
-	me.getTime = Date.now || function getTime () { return new Date().getTime(); };
+	me.getTime = Date.now || function () { return +new Date };
 
 	me.extend = function (target, obj) {
 		for ( var i in obj ) {
@@ -47,83 +46,64 @@ var utils = (function () {
 		el.removeEventListener(type, fn, !!capture);
 	};
 
-	me.momentum = function (current, start, time, lowerMargin, wrapperSize, deceleration) {
-		var distance = current - start,
-			speed = Math.abs(distance) / time,
-			destination,
-			duration;
+  me.momentum = function (current, start, time, lowerMargin, wrapperSize, deceleration) {
+    var distance = current - start,
+      speed = Math.abs(distance) / time,
+      destination,
+      duration;
 
-		deceleration = deceleration === undefined ? 0.0006 : deceleration;
+    deceleration = deceleration === undefined ? 0.0006 : deceleration;
 
-		destination = current + ( speed * speed ) / ( 2 * deceleration ) * ( distance < 0 ? -1 : 1 );
-		duration = speed / deceleration;
+    destination = current + ( speed * speed ) / ( 2 * deceleration ) * ( distance < 0 ? -1 : 1 );
+    duration = speed / deceleration;
 
-		if ( destination < lowerMargin ) {
-			destination = wrapperSize ? lowerMargin - ( wrapperSize / 2.5 * ( speed / 8 ) ) : lowerMargin;
-			distance = Math.abs(destination - current);
-			duration = distance / speed;
-		} else if ( destination > 0 ) {
-			destination = wrapperSize ? wrapperSize / 2.5 * ( speed / 8 ) : 0;
-			distance = Math.abs(current) + destination;
-			duration = distance / speed;
-		}
+    if ( destination < lowerMargin ) {
+      destination = wrapperSize ? lowerMargin - ( wrapperSize / 2.5 * ( speed / 8 ) ) : lowerMargin;
+      distance = Math.abs(destination - current);
+      duration = distance / speed;
+    } else if ( destination > 0 ) {
+      destination = wrapperSize ? wrapperSize / 2.5 * ( speed / 8 ) : 0;
+      distance = Math.abs(current) + destination;
+      duration = distance / speed;
+    }
 
-		return {
-			destination: Math.round(destination),
-			duration: duration
-		};
-	};
+    return {
+      destination: Math.round(destination),
+      duration: duration
+    };
+  };
 
-	var _transform = _prefixStyle('transform');
+
+//	var _transform = _prefixStyle('transform');
 
 	me.extend(me, {
-		hasTransform: _transform !== false,
+//		hasTransform: _transform !== false,
 		hasPerspective: _prefixStyle('perspective') in _elementStyle,
 		hasTouch: 'ontouchstart' in window,
-		hasPointer: navigator.msPointerEnabled,
-		hasTransition: _prefixStyle('transition') in _elementStyle
+		hasPointer: navigator.msPointerEnabled
+//	,hasTransition: _prefixStyle('transition') in _elementStyle
 	});
 
 	// This should find all Android browsers lower than build 535.19 (both stock browser and webview)
-	me.isBadAndroid = /Android /.test(window.navigator.appVersion) && !(/Chrome\/\d/.test(window.navigator.appVersion));
+	me.isBadAndroid = window.navigator.appVersion.match('Android') && !/Chrome\/\d/.test(window.navigator.appVersion);
 
-	me.extend(me.style = {}, {
-		transform: _transform,
+
+//	me.extend(me.style = {}, {
+  me.style = {
+		transition: _prefixStyle('transition'),
+		transform: _prefixStyle('transform'),
 		transitionTimingFunction: _prefixStyle('transitionTimingFunction'),
 		transitionDuration: _prefixStyle('transitionDuration'),
 		transitionDelay: _prefixStyle('transitionDelay'),
 		transformOrigin: _prefixStyle('transformOrigin')
-	});
-
-	me.hasClass = function (e, c) {
-		var re = new RegExp("(^|\\s)" + c + "(\\s|$)");
-		return re.test(e.className);
-	};
-
-	me.addClass = function (e, c) {
-		if ( me.hasClass(e, c) ) {
-			return;
-		}
-
-		var newclass = e.className.split(' ');
-		newclass.push(c);
-		e.className = newclass.join(' ');
-	};
-
-	me.removeClass = function (e, c) {
-		if ( !me.hasClass(e, c) ) {
-			return;
-		}
-
-		var re = new RegExp("(^|\\s)" + c + "(\\s|$)", 'g');
-		e.className = e.className.replace(re, ' ');
-	};
-
+//	});
+  }
 	me.offset = function (el) {
 		var left = -el.offsetLeft,
 			top = -el.offsetTop;
 
 		// jshint -W084
+    // offsetParent 查询
 		while (el = el.offsetParent) {
 			left -= el.offsetLeft;
 			top -= el.offsetTop;
@@ -146,7 +126,8 @@ var utils = (function () {
 		return false;
 	};
 
-	me.extend(me.eventType = {}, {
+//	me.extend(me.eventType = {}, {
+  me.eventType = {
 		touchstart: 1,
 		touchmove: 1,
 		touchend: 1,
@@ -158,9 +139,11 @@ var utils = (function () {
 		MSPointerDown: 3,
 		MSPointerMove: 3,
 		MSPointerUp: 3
-	});
+  }
+//	});
 
-	me.extend(me.ease = {}, {
+//	me.extend(me.ease = {}, {
+  me.ease = {
 		quadratic: {
 			style: 'cubic-bezier(0.25, 0.46, 0.45, 0.94)',
 			fn: function (k) {
@@ -206,22 +189,22 @@ var utils = (function () {
 				return ( e * Math.pow( 2, - 10 * k ) * Math.sin( ( k - f / 4 ) * ( 2 * Math.PI ) / f ) + 1 );
 			}
 		}
-	});
-
-	me.tap = function (e, eventName) {
-		var ev = document.createEvent('Event');
-		ev.initEvent(eventName, true, true);
-		ev.pageX = e.pageX;
-		ev.pageY = e.pageY;
-		e.target.dispatchEvent(ev);
 	};
+
+//	me.tap = function (e, eventName) {
+//		var ev = document.createEvent('Event');
+//		ev.initEvent(eventName, true, true);
+//		ev.pageX = e.pageX;
+//		ev.pageY = e.pageY;
+//		e.target.dispatchEvent(ev);
+//	};
 
 	me.click = function (e) {
 		var target = e.target,
 			ev;
 
-		if ( !(/(SELECT|INPUT|TEXTAREA)/i).test(target.tagName) ) {
-			ev = document.createEvent('MouseEvents');
+    if ( !(/(SELECT|INPUT|TEXTAREA)/i).test(target.tagName) ) {
+      ev = document.createEvent('MouseEvents');
 			ev.initMouseEvent('click', true, true, e.view, 1,
 				target.screenX, target.screenY, target.clientX, target.clientY,
 				e.ctrlKey, e.altKey, e.shiftKey, e.metaKey,
@@ -252,7 +235,7 @@ function IScroll (el, options) {
 
 		bounce: true,
 		bounceTime: 600,
-		bounceEasing: '',
+		bounceEasing: utils.ease.circular,
 
 		preventDefault: true,
 		preventDefaultException: { tagName: /^(INPUT|TEXTAREA|BUTTON|SELECT)$/ },
@@ -260,36 +243,37 @@ function IScroll (el, options) {
 		HWCompositing: true,
 		useTransition: true,
 		useTransform: true
+   ,resizePolling:60
 	};
 
-	for ( var i in options ) {
-		this.options[i] = options[i];
-	}
-
+//	for ( var i in options ) {
+//		this.options[i] = options[i];
+//	}
+  utils.extend(this.options,options);
 	// Normalize options
 	this.translateZ = this.options.HWCompositing && utils.hasPerspective ? ' translateZ(0)' : '';
 
-	this.options.useTransition = utils.hasTransition && this.options.useTransition;
-	this.options.useTransform = utils.hasTransform && this.options.useTransform;
+//	this.options.useTransition = this.options.useTransition;
+	this.options.useTransform = utils.style.transform && this.options.useTransform;
 
 	this.options.eventPassthrough = this.options.eventPassthrough === true ? 'vertical' : this.options.eventPassthrough;
-	this.options.preventDefault = !this.options.eventPassthrough && this.options.preventDefault;
+  //	this.options.preventDefault = !this.options.eventPassthrough && this.options.preventDefault;
+  this.options.preventDefault = !this.options.eventPassthrough;
 
 	// If you want eventPassthrough I have to lock one of the axes
 	this.options.scrollY = this.options.eventPassthrough == 'vertical' ? false : this.options.scrollY;
 	this.options.scrollX = this.options.eventPassthrough == 'horizontal' ? false : this.options.scrollX;
 
 	// With eventPassthrough we also need lockDirection mechanism
-	this.options.freeScroll = this.options.freeScroll && !this.options.eventPassthrough;
+	this.options.freeScroll = this.options.freeScroll;
 	this.options.directionLockThreshold = this.options.eventPassthrough ? 0 : this.options.directionLockThreshold;
 
-	this.options.bounceEasing = typeof this.options.bounceEasing == 'string' ? utils.ease[this.options.bounceEasing] || utils.ease.circular : this.options.bounceEasing;
+	typeof this.options.bounceEasing == 'string' && (this.options.bounceEasing = utils.ease[this.options.bounceEasing] || utils.ease.circular);
 
-	this.options.resizePolling = this.options.resizePolling === undefined ? 60 : this.options.resizePolling;
 
-	if ( this.options.tap === true ) {
-		this.options.tap = 'tap';
-	}
+//	if ( this.options.tap === true ) {
+//		this.options.tap = 'tap';
+//	}
 
 // INSERT POINT: NORMALIZATION
 
@@ -518,9 +502,9 @@ IScroll.prototype = {
 
 		// we scrolled less than 10 pixels
 		if ( !this.moved ) {
-			if ( this.options.tap ) {
-				utils.tap(e, this.options.tap);
-			}
+//			if ( this.options.tap ) {
+//				utils.tap(e, this.options.tap);
+//			}
 
 			if ( this.options.click ) {
 				utils.click(e);
@@ -537,9 +521,12 @@ IScroll.prototype = {
 
 		// start momentum animation if needed
 		if ( this.options.momentum && duration < 300 ) {
-			momentumX = this.hasHorizontalScroll ? utils.momentum(this.x, this.startX, duration, this.maxScrollX, this.options.bounce ? this.wrapperWidth : 0, this.options.deceleration) : { destination: newX, duration: 0 };
-			momentumY = this.hasVerticalScroll ? utils.momentum(this.y, this.startY, duration, this.maxScrollY, this.options.bounce ? this.wrapperHeight : 0, this.options.deceleration) : { destination: newY, duration: 0 };
-			newX = momentumX.destination;
+
+      momentumX = this.hasHorizontalScroll ? utils.momentum(this.x, this.startX, duration, this.maxScrollX, this.options.bounce ? this.wrapperWidth : 0, this.options.deceleration) : { destination: newX, duration: 0 };
+      momentumY = this.hasVerticalScroll ? utils.momentum(this.y, this.startY, duration, this.maxScrollY, this.options.bounce ? this.wrapperHeight : 0, this.options.deceleration) : { destination: newY, duration: 0 };
+
+      newX = momentumX.destination;
+
 			newY = momentumY.destination;
 			time = Math.max(momentumX.duration, momentumY.duration);
 			this.isInTransition = 1;
@@ -619,6 +606,7 @@ IScroll.prototype = {
 		this.maxScrollX		= this.wrapperWidth - this.scrollerWidth;
 		this.maxScrollY		= this.wrapperHeight - this.scrollerHeight;
 
+
 /* REPLACE END: refresh */
 
 		this.hasHorizontalScroll	= this.options.scrollX && this.maxScrollX < 0;
@@ -681,6 +669,7 @@ IScroll.prototype = {
 		}
 
 		for ( ; i < l; i++ ) {
+
 			this._events[type][i].apply(this, [].slice.call(arguments, 1));
 		}
 	},
@@ -813,10 +802,10 @@ IScroll.prototype = {
 			eventType(target, 'touchend', this);
 		}
 
-		eventType(this.scroller, 'transitionend', this);
-		eventType(this.scroller, 'webkitTransitionEnd', this);
-		eventType(this.scroller, 'oTransitionEnd', this);
-		eventType(this.scroller, 'MSTransitionEnd', this);
+    eventType(this.scroller,  utils.style.transition + 'End', this);
+//		eventType(this.scroller, 'webkitTransitionEnd', this);
+//		eventType(this.scroller, 'oTransitionEnd', this);
+//		eventType(this.scroller, 'MSTransitionEnd', this);
 	},
 
 	getComputedPosition: function () {
@@ -920,7 +909,7 @@ IScroll.prototype = {
 	}
 };
 IScroll.utils = utils;
-
+//minimap demo require IScroll.utils
 if ( typeof module != 'undefined' && module.exports ) {
 	module.exports = IScroll;
 } else {
