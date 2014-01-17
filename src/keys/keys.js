@@ -43,7 +43,7 @@
 		var snap = this.options.snap,	// we are using this alot, better to cache it
 			newX = snap ? this.currentPage.pageX : this.x,
 			newY = snap ? this.currentPage.pageY : this.y,
-			now = utils.getTime(),
+			now = Date.now(),
 			prevTime = this.keyTime || 0,
 			acceleration = 0.250,
 			pos;

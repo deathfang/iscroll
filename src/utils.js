@@ -28,7 +28,7 @@ var utils = (function () {
 		return _vendor + style.charAt(0).toUpperCase() + style.substr(1);
 	}
 
-	me.getTime = Date.now || function () { return +new Date };
+//	me.getTime = Date.now || function () { return +new Date };
 
 	me.extend = function (target, obj) {
 		for ( var i in obj ) {

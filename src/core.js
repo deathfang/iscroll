@@ -131,7 +131,7 @@ IScroll.prototype = {
 
 		this._transitionTime();
 
-		this.startTime = utils.getTime();
+		this.startTime = Date.now();
 
 		if ( this.options.useTransition && this.isInTransition ) {
 			this.isInTransition = false;
@@ -165,7 +165,7 @@ IScroll.prototype = {
 		var point		= e.touches ? e.touches[0] : e,
 			deltaX		= point.pageX - this.pointX,
 			deltaY		= point.pageY - this.pointY,
-			timestamp	= utils.getTime(),
+			timestamp	= Date.now(),
 			newX, newY,
 			absDistX, absDistY;
 
@@ -262,7 +262,7 @@ IScroll.prototype = {
 		var point = e.changedTouches ? e.changedTouches[0] : e,
 			momentumX,
 			momentumY,
-			duration = utils.getTime() - this.startTime,
+			duration = Date.now() - this.startTime,
 			newX = Math.round(this.x),
 			newY = Math.round(this.y),
 			distanceX = Math.abs(newX - this.startX),
@@ -272,7 +272,7 @@ IScroll.prototype = {
 
 		this.isInTransition = 0;
 		this.initiated = 0;
-		this.endTime = utils.getTime();
+		this.endTime = Date.now();
 
 		// reset if we are outside of the boundaries
 		if ( this.resetPosition(this.options.bounceTime) ) {

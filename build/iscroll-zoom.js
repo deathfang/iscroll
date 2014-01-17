@@ -30,7 +30,7 @@ var utils = (function () {
 		return _vendor + style.charAt(0).toUpperCase() + style.substr(1);
 	}
 
-	me.getTime = Date.now || function () { return +new Date };
+//	me.getTime = Date.now || function () { return +new Date };
 
 	me.extend = function (target, obj) {
 		for ( var i in obj ) {
@@ -387,7 +387,7 @@ IScroll.prototype = {
 
 		this._transitionTime();
 
-		this.startTime = utils.getTime();
+		this.startTime = Date.now();
 
 		if ( this.options.useTransition && this.isInTransition ) {
 			this.isInTransition = false;
@@ -421,7 +421,7 @@ IScroll.prototype = {
 		var point		= e.touches ? e.touches[0] : e,
 			deltaX		= point.pageX - this.pointX,
 			deltaY		= point.pageY - this.pointY,
-			timestamp	= utils.getTime(),
+			timestamp	= Date.now(),
 			newX, newY,
 			absDistX, absDistY;
 
@@ -518,7 +518,7 @@ IScroll.prototype = {
 		var point = e.changedTouches ? e.changedTouches[0] : e,
 			momentumX,
 			momentumY,
-			duration = utils.getTime() - this.startTime,
+			duration = Date.now() - this.startTime,
 			newX = Math.round(this.x),
 			newY = Math.round(this.y),
 			distanceX = Math.abs(newX - this.startX),
@@ -528,7 +528,7 @@ IScroll.prototype = {
 
 		this.isInTransition = 0;
 		this.initiated = 0;
-		this.endTime = utils.getTime();
+		this.endTime = Date.now();
 
 		// reset if we are outside of the boundaries
 		if ( this.resetPosition(this.options.bounceTime) ) {
@@ -1558,7 +1558,7 @@ IScroll.prototype = {
 		var snap = this.options.snap,	// we are using this alot, better to cache it
 			newX = snap ? this.currentPage.pageX : this.x,
 			newY = snap ? this.currentPage.pageY : this.y,
-			now = utils.getTime(),
+			now = Date.now(),
 			prevTime = this.keyTime || 0,
 			acceleration = 0.250,
 			pos;
@@ -1641,11 +1641,11 @@ IScroll.prototype = {
 		var that = this,
 			startX = this.x,
 			startY = this.y,
-			startTime = utils.getTime(),
+			startTime = Date.now(),
 			destTime = startTime + duration;
 
 		function step () {
-			var now = utils.getTime(),
+			var now = Date.now(),
 				newX, newY,
 				easing;
 
@@ -1875,7 +1875,7 @@ Indicator.prototype = {
 		this.lastPointX	= point.pageX;
 		this.lastPointY	= point.pageY;
 
-		this.startTime	= utils.getTime();
+		this.startTime	= Date.now();
 
 		if ( !this.options.disableTouch ) {
 			utils.addEvent(window, 'touchmove', this);
@@ -1894,7 +1894,7 @@ Indicator.prototype = {
 		var point = e.touches ? e.touches[0] : e,
 			deltaX, deltaY,
 			newX, newY,
-			timestamp = utils.getTime();
+			timestamp = Date.now();
 
 		if ( !this.moved ) {
 			this.scroller._execEvent('scrollStart');

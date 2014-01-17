@@ -142,7 +142,7 @@ Indicator.prototype = {
 		this.lastPointX	= point.pageX;
 		this.lastPointY	= point.pageY;
 
-		this.startTime	= utils.getTime();
+		this.startTime	= Date.now();
 
 		if ( !this.options.disableTouch ) {
 			utils.addEvent(window, 'touchmove', this);
@@ -161,7 +161,7 @@ Indicator.prototype = {
 		var point = e.touches ? e.touches[0] : e,
 			deltaX, deltaY,
 			newX, newY,
-			timestamp = utils.getTime();
+			timestamp = Date.now();
 
 		if ( !this.moved ) {
 			this.scroller._execEvent('scrollStart');

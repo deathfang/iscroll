@@ -3,11 +3,11 @@
 		var that = this,
 			startX = this.x,
 			startY = this.y,
-			startTime = utils.getTime(),
+			startTime = Date.now(),
 			destTime = startTime + duration;
 
 		function step () {
-			var now = utils.getTime(),
+			var now = Date.now(),
 				newX, newY,
 				easing;
 
