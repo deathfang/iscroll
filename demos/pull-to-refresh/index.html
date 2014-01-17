@@ -6,95 +6,96 @@
 <meta name="apple-mobile-web-app-status-bar-style" content="black">
 <title>iScroll demo: simple</title>
 
-<script type="text/javascript" src="../../build/iscroll.js"></script>
+<script type="text/javascript" src="../../build/iscroll-probe.js"></script>
 
 <script type="text/javascript">
-
+//based on http://cubiq.org/dropbox/iscroll4/examples/pull-to-refresh/
 var myScroll,
-	pullDownEl, pullDownOffset,
-	pullUpEl, pullUpOffset,
+	pullDownEl, pullDownOffset,pullDownLabel,
+	pullUpEl, pullUpOffset,pullUpLabel,
 	generatedCount = 0;
+
+function addRow(addDom){
+    var el, li, i;
+    el = document.getElementById('thelist');
+
+    for (i=0; i<3; i++) {
+        li = document.createElement('li');
+        li.innerText = 'Generated row ' + (++generatedCount);
+        el[addDom](li, el.childNodes[0]);
+    }
+
+    myScroll.refresh();		// Remember to refresh when contents are loaded (ie: on ajax completion)
+}
 
 function pullDownAction () {
 	setTimeout(function () {	// <-- Simulate network congestion, remove setTimeout from production!
-		var el, li, i;
-		el = document.getElementById('thelist');
-
-		for (i=0; i<3; i++) {
-			li = document.createElement('li');
-			li.innerText = 'Generated row ' + (++generatedCount);
-			el.insertBefore(li, el.childNodes[0]);
-		}
-		
-		myScroll.refresh();		// Remember to refresh when contents are loaded (ie: on ajax completion)
-	}, 1000);	// <-- Simulate network congestion, remove setTimeout from production!
+		addRow('insertBefore');
+        myScroll.scrollTo(0,-pullDownOffset);
+	}, 500);	// <-- Simulate network congestion, remove setTimeout from production!
 }
 
 function pullUpAction () {
 	setTimeout(function () {	// <-- Simulate network congestion, remove setTimeout from production!
-		var el, li, i;
-		el = document.getElementById('thelist');
-
-		for (i=0; i<3; i++) {
-			li = document.createElement('li');
-			li.innerText = 'Generated row ' + (++generatedCount);
-			el.appendChild(li, el.childNodes[0]);
-		}
-		
-		myScroll.refresh();		// Remember to refresh when contents are loaded (ie: on ajax completion)
-	}, 1000);	// <-- Simulate network congestion, remove setTimeout from production!
+		addRow('appendChild')
+	}, 500);	// <-- Simulate network congestion, remove setTimeout from production!
 }
 
 function loaded() {
 	pullDownEl = document.getElementById('pullDown');
 	pullDownOffset = pullDownEl.offsetHeight;
+    pullDownLabel = pullDownEl.querySelector('.pullDownLabel');
 	pullUpEl = document.getElementById('pullUp');	
 	pullUpOffset = pullUpEl.offsetHeight;
-	
+	pullUpLabel = pullUpEl.querySelector('.pullUpLabel');
+
 	myScroll = new IScroll('#wrapper', {
-		useTransition: true,
-		topOffset: pullDownOffset
+        startY: -pullDownOffset,
+        probeType:2
 	});
-    myScroll.on('beforeScrollStart',function () {
-        if (pullDownEl.className.match('loading')) {
+    myScroll.on('refresh',function () {
+        if (pullDownEl.classList.contains('loading')) {
             pullDownEl.className = '';
-            pullDownEl.querySelector('.pullDownLabel').innerHTML = 'Pull down to refresh...';
-        } else if (pullUpEl.className.match('loading')) {
+            pullDownLabel.innerHTML = 'Pull down to refresh...';
+        } else if (pullUpEl.classList.contains('loading')) {
             pullUpEl.className = '';
-            pullUpEl.querySelector('.pullUpLabel').innerHTML = 'Pull up to load more...';
+            pullUpLabel.innerHTML = 'Pull up to load more...';
         }
     });
 
-    myScroll.on('scrollStart',function () {
-        if (this.y > 5 && !pullDownEl.className.match('flip')) {
+    myScroll.on('scroll',function () {
+        if (this.y > 5 && !pullDownEl.classList.contains('flip')) {
             pullDownEl.className = 'flip';
-            pullDownEl.querySelector('.pullDownLabel').innerHTML = 'Release to refresh...';
-            this.minScrollY = 0;
-        } else if (this.y < 5 && pullDownEl.className.match('flip')) {
+            pullDownLabel.innerHTML = 'Release to refresh...';
+//            this.minScrollY = 0;
+        } else if (this.y < 5 && pullDownEl.classList.contains('flip')) {
             pullDownEl.className = '';
-            pullDownEl.querySelector('.pullDownLabel').innerHTML = 'Pull down to refresh...';
-            this.minScrollY = -pullDownOffset;
-        } else if (this.y < (this.maxScrollY - 5) && !pullUpEl.className.match('flip')) {
+            pullDownLabel.innerHTML = 'Pull down to refresh...';
+//            this.minScrollY = -pullDownOffset;
+        } else if (this.y < (this.maxScrollY - 5) && !pullUpEl.classList.contains('flip')) {
             pullUpEl.className = 'flip';
-            pullUpEl.querySelector('.pullUpLabel').innerHTML = 'Release to refresh...';
+            pullUpLabel.innerHTML = 'Release to refresh...';
             this.maxScrollY = this.maxScrollY;
-        } else if (this.y > (this.maxScrollY + 5) && pullUpEl.className.match('flip')) {
+        } else if (this.y > (this.maxScrollY + 5) && pullUpEl.classList.contains('flip')) {
             pullUpEl.className = '';
-            pullUpEl.querySelector('.pullUpLabel').innerHTML = 'Pull up to load more...';
-            this.maxScrollY = pullUpOffset;
+            pullUpLabel.innerHTML = 'Pull up to load more...';
+//            this.maxScrollY = pullUpOffset;
         }
     })
 
     myScroll.on('scrollEnd',function () {
-        if (pullDownEl.className.match('flip')) {
+        if (pullDownEl.classList.contains('flip')) {
             pullDownEl.className = 'loading';
-            pullDownEl.querySelector('.pullDownLabel').innerHTML = 'Loading...';
+            pullDownLabel.innerHTML = 'Loading...';
             pullDownAction();	// Execute custom function (ajax call?)
-        } else if (pullUpEl.className.match('flip')) {
+        } else if (pullUpEl.classList.contains('flip')) {
             pullUpEl.className = 'loading';
-            pullUpEl.querySelector('.pullUpLabel').innerHTML = 'Loading...';
+            pullUpLabel.innerHTML = 'Loading...';
             pullUpAction();	// Execute custom function (ajax call?)
+        }else if ((this.y < 5 && this.y > 0) || this.y > (this.maxScrollY + 5)){
+            this.scrollTo(0,-pullDownOffset,this.options.bounceTime);
         }
+        console.log('fuck')
     })
 	setTimeout(function () { document.getElementById('wrapper').style.left = '0'; }, 800);
 }
